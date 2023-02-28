@@ -46,7 +46,9 @@ class Multimodal_GPT(nn.Module):
 
     def __init__(self,  prefix_len=10, clip_size=512,  constant_len=10,finetune_gpt2=False):
         super(Multimodal_GPT, self).__init__()
+        
         self.finetune_gpt2 = finetune_gpt2
+        # 更换到你的GPT2权重文件路径
         self.gpt2=GPT2LMHeadModel.from_pretrained('H:/GPT_2_MODEL/gpt_chinese_small/pytorch_model.bin',config='H:/GPT_2_MODEL/gpt_chinese_small/config.json')
         self.prefix_size = 768
         self.prefix_len = 10
@@ -57,7 +59,8 @@ class Multimodal_GPT(nn.Module):
 
         :param clip_embeds: 图像embedding, [bs, clip_size]
         :param caption_ids: caption的文本id, [bs, len]
-        :param mask: 对于caption的文本id的attention mask, [bs, len]
+        :param answer_ids: answer的文本id, [bs, len]
+        :param mask: 对于caption的文本id的attention mask, [bs, len]    
         :return:
         """
         # caption_inputs_embeds:[bs, caption_len, prefix_size]

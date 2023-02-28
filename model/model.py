@@ -23,9 +23,6 @@ import torch.nn.functional as F
 from loguru import logger
 
 
-class MappingType(Enum):
-    MLP = 'mlp'
-    BERT = 'bert'
 
 
 class MLP(nn.Module):
@@ -94,30 +91,3 @@ class Multimodal_GPT(nn.Module):
         if not self.finetune_gpt2:
             self.gpt2.eval()
         return self
-'''
-
-if __name__ == '__main__':
-    c=torch.tensor([11625,   102,     0,     0,     0,     0,     0,     0,     0,     0,
-            0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-            0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-            0,     0,     0,     0,     0,     0,     0,     0,     0,     0]).unsqueeze(dim=0)
-    a=torch.tensor([9367,  102,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-           0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-           0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-           0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-           0,    0]).unsqueeze(dim=0)
-
-
-    i=torch.rand(1,512)
-    # mask torch.Size([1, 100])
-    mask=torch.tensor([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0]).unsqueeze(dim=0)                   
-                           
-    model=ClipCaptionModel()
-    y=model(i,c,a,mask)
-    print(y.shape) # answer_logits :torch.Size([1, 50, 21128])  logits:torch.Size([1, 100, 21128])
-
-'''

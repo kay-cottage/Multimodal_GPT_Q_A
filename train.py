@@ -51,17 +51,19 @@ def train(model, train_loader,  optimizer,  args):
         print('epoch{}--------loss{}'.format(epoch+1,loss))
         for batch_idx, data in enumerate(tqdm(train_loader)):
             step = epoch * len(train_loader) + batch_idx + 1
-            clip_embeds, caption_ids, answer_ids,mask = data
+            clip_embeds, caption_ids, mask = data
             clip_embeds = clip_embeds.to(device).float()
             caption_ids = caption_ids.to(device)
-            answer_ids = answer_ids.to(device)
+            #answer_ids = answer_ids.to(device)
             mask = mask.to(device)
             logits = model(clip_embeds, caption_ids, answer_ids,mask)
 
             # 计算loss
-            shift_logits = logits[:, -answer_ids.size(1):, :].contiguous().view(-1, logits.size(-1))
+            #shift_logits = logits[:, -answer_ids.size(1):, :].contiguous().view(-1, logits.size(-1))
             #shift_logits = logits.contiguous().view(-1, logits.size(-1))
-            shift_labels = answer_ids.view(-1)
+            #shift_labels = answer_ids.view(-1)
+            shift_logits = logits[..., args.prefix_len - 1:-1, :].contiguous().view(-1, logits.size(-1))
+            shift_labels = caption_ids.view(-1)
             loss = F.cross_entropy(shift_logits, shift_labels)
 
             loss.backward()

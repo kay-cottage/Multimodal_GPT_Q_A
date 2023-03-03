@@ -54,7 +54,7 @@ class Multimodal_GPT(nn.Module):
         self.prefix_len = 10
         self.clip_project = MLP((clip_size, (self.prefix_size * prefix_len)))
 
-    def forward(self, clip_embeds, caption_ids, answer_ids,mask):
+    def forward(self, clip_embeds, caption_ids ,mask):
         """
 
         :param clip_embeds: 图像embedding, [bs, clip_size]
@@ -65,12 +65,12 @@ class Multimodal_GPT(nn.Module):
         """
         # caption_inputs_embeds:[bs, caption_len, prefix_size]
         caption_embeds = self.gpt2.transformer.wte(caption_ids)
-        answer_embeds = self.gpt2.transformer.wte(answer_ids)
+        #answer_embeds = self.gpt2.transformer.wte(answer_ids)
         # prefix_embeds:[bs, prefix_len, prefix_size]
         prefix_embeds = self.clip_project(clip_embeds).view(-1, self.prefix_len, self.prefix_size)
         # torch.Size([1, 10, 768]) torch.Size([1, 40, 768]) torch.Size([1, 50, 768])
         # embedding_cat:[bs, prefix_len+caption_len, prefix_size]
-        embedding_cat = torch.cat((prefix_embeds, caption_embeds,answer_embeds), dim=1)
+        embedding_cat = torch.cat((prefix_embeds, caption_embeds), dim=1)
         #print(embedding_cat.shape)
         out = self.gpt2(inputs_embeds=embedding_cat,attention_mask=mask)
         # logits:[bs, prefix_len+caption_len, prefix_size]
@@ -81,7 +81,7 @@ class Multimodal_GPT(nn.Module):
 
     def parameters(self, recurse: bool = True):
         if self.finetune_gpt2:
-            return super(ClipCaptionModel, self).parameters()
+            return super(Multimodal_GPT, self).parameters()
         else:
             return self.clip_project.parameters()
 

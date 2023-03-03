@@ -80,6 +80,7 @@ def generate(model, clip_embeds, caption,tokenizer):
 
 
     caption = tokenizer.encode(caption, add_special_tokens=False)
+    caption.append(tokenizer.sep_token_id)
     caption=torch.tensor([caption]).long()
         
     # gpt2模型的输入: inputs_embeds:[bs, prefix_len, prefix_size]
